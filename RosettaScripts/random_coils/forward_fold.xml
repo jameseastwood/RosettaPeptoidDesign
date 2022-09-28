@@ -1,0 +1,93 @@
+<ROSETTASCRIPTS>
+  <SCOREFXNS>
+    <ScoreFunction name="sfxn_1">
+      <Reweight scoretype="fa_atr" weight="1.0"/>
+      <Reweight scoretype="fa_rep" weight="0.25"/>
+      <Reweight scoretype="fa_sol" weight="10.0"/>
+      <Reweight scoretype="fa_intra_sol" weight="10.0" />
+      <Reweight scoretype="lk_ball_wtd" weight="10.0"/>
+      <Reweight scoretype="omega" weight="0.4"/>
+      <Reweight scoretype="rama_prepro" weight="1.0"/>
+      <Reweight scoretype="co" weight="-2.0"/>
+      <Reweight scoretype="rg" weight="10.0"/>
+      <Set softrep_etable="True" />
+    </ScoreFunction>
+    <ScoreFunction name="sfxn_2">
+      <Reweight scoretype="fa_atr" weight="1.0"/>
+      <Reweight scoretype="fa_rep" weight="0.25"/>
+      <Reweight scoretype="fa_sol" weight="1.0"/>
+      <Reweight scoretype="fa_intra_sol" weight="1.0" />
+      <Reweight scoretype="fa_elec" weight="1.0" />
+      <Reweight scoretype="lk_ball_wtd" weight="1.0"/>
+      <Reweight scoretype="omega" weight="0.4"/>
+      <Reweight scoretype="rama_prepro" weight="1.0"/>
+      <Reweight scoretype="co" weight="-2.0"/>
+      <Reweight scoretype="rg" weight="2.0"/>
+    </ScoreFunction>
+    <ScoreFunction name="r15" weights="ref2015.wts" />
+    <ScoreFunction name="final" weights="ref2015.wts">
+      <Reweight scoretype="co" weight="-1.0" />
+      <Reweight scoretype="rg" weight="1.0" />
+    </ScoreFunction>
+  </SCOREFXNS>
+  <RESIDUE_SELECTORS>
+    <ResiduePropertySelector name="peptoid" properties="PEPTOID" />
+    <True name="true_sel" />
+    <Slice name="first" selector="true_sel" indices="1" />
+    <Slice name="last" selector="true_sel" indices="-1" />
+    <Slice name="middle" selector="true_sel" from="2" to="-2" />
+  </RESIDUE_SELECTORS>
+  <TASKOPERATIONS>
+    <LimitAromaChi2 name="limitaromachi2" />
+    <ExtraRotamersGeneric name="extrarot1" ex1="true" ex2="false" extrachi_cutoff="4" />
+    <ExtraRotamersGeneric name="extrarot2" ex1="true" ex2="true" extrachi_cutoff="4" />
+  </TASKOPERATIONS>
+  <FILTERS>
+    <ScoreType name="co" score_type="co" threshold="-9.0" scorefxn="sfxn_2" />
+    <ScoreType name="rg" score_type="rg" threshold="30.0" scorefxn="sfxn_2" />
+    <ScoreType name="high_score" threshold="0" scorefxn="sfxn_2" />
+  </FILTERS>
+  <MOVERS>
+    <RandomizeBBByRamaPrePro name="randomize" />
+    <CrankshaftFlipMover name="cflip" residue_selector="middle" />
+    <SetTorsion name="rama_sample">
+      <Torsion residue="ALL" torsion_name="rama" angle="rama_biased" />
+    </SetTorsion>
+    <SetTorsion name="perturb">
+      <Torsion residue="ALL" torsion_name="rama" angle="perturb" perturbation_type="gaussian" perturbation_magnitude="10.0" />
+    </SetTorsion>
+    <RandomOmegaFlipMover name="omega" />
+    <PyMOLMover name="pmm" keep_history="true" />
+    <PDBTrajectoryRecorder name="traj" stride="10" filename="traj.pdb"/>    
+    <ParsedProtocol name="sample" mode="single_random">
+      <!--Add mover="shear" />-->
+      <!--Add mover="small" />-->
+      <Add mover="cflip" />
+      <Add mover="rama_sample" />
+      <Add mover="perturb" />
+      <Add mover="omega" />
+    </ParsedProtocol>
+    <ParsedProtocol name="sample_and_observe" mode="sequence">
+      <Add mover="sample"/>
+      <Add mover="pmm"/>
+      <Add mover="traj"/>
+    </ParsedProtocol>
+    <GenericMonteCarlo name="mc1" mover_name="sample" scorefxn_name="sfxn_1" trials="2000" sample_type="low" temperature="2.0" drift="1" recover_low="1" preapply="0" adaptive_movers="1" adaptation_period="200" />
+    <GenericMonteCarlo name="mc2" mover_name="sample" scorefxn_name="sfxn_2" trials="2000" sample_type="low" temperature="2.0" drift="1" recover_low="1" preapply="0" adaptive_movers="1" adaptation_period="200" />
+    <FastRelax name="relax" repeats="5" scorefxn="r15" task_operations="extrarot1" relaxscript="MonomerRelax2019" />
+    <DumpPdb name="dump" tag_time="True" fname="dump"/>
+  </MOVERS>
+  <PROTOCOLS>
+    <Add mover="randomize" />
+    <Add mover="mc1"/>
+    <Add mover="pmm" />
+    <Add filter="rg" />
+    <Add filter="co" />
+    <Add mover="mc2" />
+    <Add mover="pmm" />
+    <Add filter="rg" />
+    <Add filter="co" />
+    <Add mover="relax" />
+  </PROTOCOLS>
+  <OUTPUT scorefxn="final" />
+</ROSETTASCRIPTS>

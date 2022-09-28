@@ -1,0 +1,143 @@
+<ROSETTASCRIPTS>
+  <SCOREFXNS>
+    <ScoreFunction name="sfxn_1">
+      <Reweight scoretype="fa_atr" weight="1.0"/>
+      <Reweight scoretype="fa_rep" weight="0.25"/>
+      <Reweight scoretype="fa_sol" weight="10.0"/>
+      <Reweight scoretype="fa_intra_sol" weight="10.0" />
+      <Reweight scoretype="lk_ball_wtd" weight="10.0"/>
+      <Reweight scoretype="omega" weight="0.4"/>
+      <Reweight scoretype="rama_prepro" weight="1.0"/>
+      <Reweight scoretype="co" weight="-2.0"/>
+      <Reweight scoretype="rg" weight="10.0"/>
+      <Set softrep_etable="True" />
+    </ScoreFunction>
+    <ScoreFunction name="sfxn_2">
+      <Reweight scoretype="fa_atr" weight="1.0"/>
+      <Reweight scoretype="fa_rep" weight="0.25"/>
+      <Reweight scoretype="fa_sol" weight="1.0"/>
+      <Reweight scoretype="fa_intra_sol" weight="1.0" />
+      <Reweight scoretype="fa_elec" weight="1.0" />
+      <Reweight scoretype="lk_ball_wtd" weight="1.0"/>
+      <Reweight scoretype="omega" weight="0.4"/>
+      <Reweight scoretype="rama_prepro" weight="1.0"/>
+      <Reweight scoretype="co" weight="-2.0"/>
+      <Reweight scoretype="rg" weight="2.0"/>
+    </ScoreFunction>
+    <ScoreFunction name="r15_design" weights="ref2015.wts" >
+      <Reweight scoretype="unfolded" weight="1.0" />
+      <Reweight scoretype="ref" weight="0.0" />
+      <Reweight scoretype="hbnet" weight="1.0" />
+      <Reweight scoretype="voids_penalty" weight="1.0" />
+      <Reweight scoretype="aa_composition" weight="1.0" />
+      <Reweight scoretype="hbond_sr_bb" weight="10.0" />
+      <Reweight scoretype="hbond_lr_bb" weight="10.0" />
+      <Set voids_penalty_energy_containing_cones_cutoff="4" />
+      <Set voids_penalty_energy_cone_distance_cutoff="7.0" />
+    </ScoreFunction>
+    <ScoreFunction name="r15" weights="ref2015.wts" />
+    <ScoreFunction name="final" weights="ref2015.wts">
+      <Reweight scoretype="co" weight="-1.0" />
+      <Reweight scoretype="rg" weight="1.0" />
+    </ScoreFunction>
+  </SCOREFXNS>
+	<RESIDUE_SELECTORS>
+	  <ResiduePropertySelector name="peptoid" properties="PEPTOID" />
+	  <True name="true_sel" />
+	  <Slice name="first" selector="true_sel" indices="1" />
+	  <Slice name="last" selector="true_sel" indices="-1" />
+	  <Slice name="middle" selector="true_sel" from="2" to="-2" />
+	</RESIDUE_SELECTORS>
+	<PACKER_PALETTES>
+    <CustomBaseTypePackerPalette name="design_palette" additional_residue_types="DPRO,001,004,005,006,007,009,010,013,021,101,102,103,104,111,116,117,118,120,127,128,132,202,203,204,205,208,209,210,211,303,305,306,314,315,316,317,318,320,401,402,406,410,411,412,413,601,602,621,622,623,624" />
+    <CustomBaseTypePackerPalette name="mini_palette" additional_residue_types="001,101,111,202,208,211,303,411,601,602" />
+    <CustomBaseTypePackerPalette name="nano_palette" additional_residue_types="001,211,303,202" />    
+	</PACKER_PALETTES>
+	<TASKOPERATIONS>
+	  <PruneBuriedUnsats name="prune_buns" allow_even_trades="true" atomic_depth_probe_radius="2.3" atomic_depth_resolution="0.5" atomic_depth_cutoff="4.5" minimum_hbond_energy="-0.5" />
+	  <LimitAromaChi2 name="limitaromachi2" />
+	  <ExtraRotamersGeneric name="extrarot1" ex1="true" ex2="false" extrachi_cutoff="4" />
+	  <ExtraRotamersGeneric name="extrarot2" ex1="true" ex2="true" extrachi_cutoff="4" />
+	  <RestrictToResidueProperties name="only_design_to_peptoids" properties="PEPTOID" />
+	</TASKOPERATIONS>
+	<MOVE_MAP_FACTORIES>
+	</MOVE_MAP_FACTORIES>
+	<SIMPLE_METRICS>
+	</SIMPLE_METRICS>
+	<FILTERS>
+	  <ScoreType name="co" score_type="co" threshold="999" scorefxn="sfxn_2" />
+	  <ScoreType name="rg" score_type="rg" threshold="20" scorefxn="sfxn_2" />
+	  <ScoreType name="high_score" threshold="0" scorefxn="sfxn_2" />
+	</FILTERS>
+	<MOVERS>
+	  <PeptideStubMover name="psm" >
+	    <Append resname="202" />
+	    <Append resname="202" repeat="2" />
+	    <Append resname="303" repeat="2" />
+	    <Append resname="202" repeat="3" />
+	    <Append resname="303" repeat="2"/>
+	    <Append resname="202" repeat="3" />
+	    <Append resname="303" repeat="5"/>
+	    <Append resname="202" repeat="5"/>
+	    <Append resname="303" repeat="5"/>
+	    <Append resname="202" repeat="2" />
+	    <Append resname="303" repeat="3" />
+	    <Append resname="202" repeat="3" />
+	    <Append resname="303" repeat="2"/>
+	    <Append resname="202" repeat="3" />
+	  </PeptideStubMover>
+	  <ModifyVariantType name="acetylate" add_type="LOWER_TERMINUS_VARIANT" residue_selector="first" />
+	  <ModifyVariantType name="methylamidate" add_type="UPPER_TERMINUS_VARIANT" residue_selector="last" />
+	  <RandomizeBBByRamaPrePro name="randomize" />
+	  <CrankshaftFlipMover name="cflip" residue_selector="middle" />
+	  <Shear name="shear" residue_selector="true_sel" scorefxn="sfxn_1" temperature="0.5" nmoves="1" angle_max="60.0" preserve_detailed_balance="0"/>
+	  <Small name="small" residue_selector="true_sel" scorefxn="sfxn_1" temperature="0.5" nmoves="1" angle_max="60.0" preserve_detailed_balance="0" />
+	  <SetTorsion name="rama_sample">
+	    <Torsion residue="ALL" torsion_name="rama" angle="rama_biased" />
+	  </SetTorsion>
+	  <SetTorsion name="perturb">
+	    <Torsion residue="ALL" torsion_name="rama" angle="perturb" perturbation_type="gaussian" perturbation_magnitude="10.0" />
+	  </SetTorsion>
+	  <RandomOmegaFlipMover name="omega" />
+	  <PyMOLMover name="pmm" keep_history="false" />
+	  <MinMover name="min" jump="0" abs_score_convergence_threshold="1.0" max_iter="200" type="lbfgs_armijo_nonmonotone" tolerance="0.01" cartesian="false" bb="true" chi="true" omega="true" scorefxn="sfxn_1" >
+	    <MoveMap name="min_mvmap" bb="true" chi="true" jump="false" />
+	  </MinMover>
+	  <ParsedProtocol name="flip_min">
+	    <Add mover="cflip" />
+	    <Add mover="min" />
+	  </ParsedProtocol>
+	  <ParsedProtocol name="sample" mode="single_random">
+	    <!--Add mover="shear" />-->
+	    <!--Add mover="small" />-->
+	    <Add mover="cflip" />
+	    <Add mover="rama_sample" />
+	    <Add mover="perturb" />
+	    <Add mover="omega" />
+	  </ParsedProtocol>
+	  <ParsedProtocol name="sample_and_observe" mode="sequence">
+	    <Add mover="sample"/>
+	    <Add mover="pmm"/>
+	  </ParsedProtocol>
+	  <GenericMonteCarlo name="mc1" mover_name="sample" scorefxn_name="sfxn_1" trials="100000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" progress_file="progress.mc" adaptive_movers="True" adaptation_period="1000" />
+	  <GenericMonteCarlo name="mc2" mover_name="sample" scorefxn_name="sfxn_2" trials="10000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" adaptive_movers="1" adaptation_period="1000" />
+	  <AddCompositionConstraintMover name="peptoid_constraints" filename="inputs/peptoid_design.comp" selector="true_sel" />
+	  <FastDesign name="design1" repeats="3" scorefxn="sfxn_2" packer_palette="mini_palette" task_operations="limitaromachi2,only_design_to_peptoids" relaxscript="MonomerDesign2019" />
+	  <FastDesign name="design2" repeats="3" scorefxn="r15_design" packer_palette="design_palette" task_operations="extrarot1,limitaromachi2,prune_buns,only_design_to_peptoids" relaxscript="MonomerDesign2019" />
+	  <FastRelax name="relax" repeats="5" scorefxn="r15" task_operations="extrarot1" relaxscript="MonomerRelax2019" />
+	  <DumpPdb name="dump" tag_time="True" />
+	</MOVERS>
+	<PROTOCOLS>
+	  <Add mover="psm" />
+	  <Add mover="acetylate" />
+	  <Add mover="methylamidate" />
+	  <Add mover="randomize" />
+	  <Add mover="mc1"/>
+	  <Add mover="relax" />
+	  <Add mover="design1" />
+	  <Add mover="peptoid_constraints" />
+	  <Add mover="design2" />
+	  <Add mover="relax" />
+	</PROTOCOLS>
+	<OUTPUT scorefxn="final" />
+</ROSETTASCRIPTS>

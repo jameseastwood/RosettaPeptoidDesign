@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ROSETTASCRIPTS>
+    <SCOREFXNS>
+      <ScoreFunction name="dock_low" weights="interchain_cen.wts" />
+      <ScoreFunction name="dock_high" weights="ref2015.wts" />
+      <ScoreFunction name="r15" weights="ref2015.wts" />
+      <ScoreFunction name="r15_relax" weights="ref2015_cst.wts" >
+	<Reweight scoretype="chainbreak" weight="1.0" />
+	<Reweight scoretype="linear_chainbreak" weight="1.0" />
+	<Reweight scoretype="overlap_chainbreak" weight="1.0" />
+      </ScoreFunction>
+      <ScoreFunction name="r15_design" weights="ref2015_cst.wts" >
+	<Reweight scoretype="buried_unsatisfied_penalty" weight="30.0" />
+	<Reweight scoretype="hbnet" weight="1.0" />
+	<Reweight scoretype="voids_penalty" weight="1.0" />
+	<Reweight scoretype="aspartimide_penalty" weight="2.0" />
+	<Reweight scoretype="aa_composition" weight="1.0" />
+	<Reweight scoretype="chainbreak" weight="10.0" />
+	<Reweight scoretype="linear_chainbreak" weight="10.0" />
+	<Reweight scoretype="overlap_chainbreak" weight="10.0" />
+	<Reweight scoretype="hbond_sr_bb" weight="10.0" />
+	<Reweight scoretype="hbond_lr_bb" weight="10.0" />
+	<Set voids_penalty_energy_containing_cones_cutoff="4" />
+	<Set voids_penalty_energy_cone_distance_cutoff="7.0" />
+	<Set buried_unsatisfied_penalty_burial_threshold="1.5" />
+	<Set buried_unsatisfied_penalty_cone_dist_midpoint="7.0" />
+	<Set buried_unsatisfied_penalty_cone_angle_exponent="2.0" />
+	<Set buried_unsatisfied_penalty_cone_angle_shift_factor="0.35" />
+      </ScoreFunction>
+      <ScoreFunction name="r15_design2" weights="ref2015_cst.wts" >
+	<Reweight scoretype="buried_unsatisfied_penalty" weight="10.0" />
+	<Reweight scoretype="hbnet" weight="0.5" />
+	<Reweight scoretype="voids_penalty" weight="0.1" />
+	<Reweight scoretype="aspartimide_penalty" weight="2.0" />
+	<Reweight scoretype="aa_composition" weight="1.0" />
+	<Reweight scoretype="chainbreak" weight="10.0" />
+	<Reweight scoretype="linear_chainbreak" weight="10.0" />
+	<Reweight scoretype="overlap_chainbreak" weight="10.0" />
+	<Set voids_penalty_energy_containing_cones_cutoff="4" />
+	<Set voids_penalty_energy_cone_distance_cutoff="7.0" />
+	<Set buried_unsatisfied_penalty_burial_threshold="1.5" />
+	<Set buried_unsatisfied_penalty_cone_dist_midpoint="7.0" />
+	<Set buried_unsatisfied_penalty_cone_angle_exponent="2.0" />
+	<Set buried_unsatisfied_penalty_cone_angle_shift_factor="0.35" />
+      </ScoreFunction>
+    </SCOREFXNS>
+    <RESIDUE_SELECTORS>
+      <Chain name="chainB" chains="2" />
+      <Index name="first" resnums="326" />
+      <Index name="last" resnums="1" reverse="1"/>
+      <Or name="first_or_last" selectors="first,last" />
+      <Not name="notB" selector="chainB" />
+      <MainchainTorsionRange name="cis" backbone_torsion="3" offset="1" lower_bound="-30" upper_bound="30" />
+      <MainchainTorsionRange name="R" backbone_torsion="1" offset="0" lower_bound="0" upper_bound="180" />
+      <MainchainTorsionRange name="trans" backbone_torsion="3" offset="1" lower_bound="150" upper_bound="-150" />
+      <MainchainTorsionRange name="S" backbone_torsion="1" offset="0" lower_bound="180" upper_bound="0" />
+      <And name="cisR" selectors="cis,R,chainB" />
+      <And name="cisS" selectors="cis,S,chainB" />
+      <And name="trans_peptoid" selectors="trans,chainB" />
+      <Neighborhood name="neighborhood" selector="chainB" distance="12" include_focus_in_subset="true" />
+      <!--Index name="interface" resnums="75,82,106,113,116,120,122,123,140,142,143,144,153,154,156,157,159,160,163,164,165,167,168,169,172" />-->
+      <Not name="not_interface" selector="neighborhood" />
+    </RESIDUE_SELECTORS>
+    <PACKER_PALETTES>
+      <CustomBaseTypePackerPalette name="design_palette" additional_residue_types="DPRO,001,003,004,005,006,007,009,010,013,020,101,102,103,104,111,116,117,118,120,202,203,204,205,208,210,211,303,305,307,314,315,316,317,401,406,410,411,412,601,602,623,624" />
+      <CustomBaseTypePackerPalette name="mini_palette" additional_residue_types="001,013,101,111,202,208,211,303,411,601,602" />
+    </PACKER_PALETTES>
+    <TASKOPERATIONS>
+      <RestrictChainToRepacking name="dont_design_protein" chain="1" />
+      <OperateOnResidueSubset name="dont_repack_protein" selector="not_interface" >
+	<PreventRepackingRLT/>
+      </OperateOnResidueSubset>
+      <RestrictToResidueProperties name="only_design_peptoids" properties="PEPTOID" selector="chainB" />
+      <LimitAromaChi2 name="limitaromachi2" />
+      <ExtraRotamersGeneric name="extrarot1" ex1="true" ex2="false" extrachi_cutoff="4" />
+      <ExtraRotamersGeneric name="extrarot2" ex1="true" ex2="true" extrachi_cutoff="4" />
+      <IncludeCurrent name="includecurrent" />
+      <OperateOnResidueSubset name="dont_design_cutpoint" selector="first_or_last">
+	<RestrictToRepackingRLT/>
+      </OperateOnResidueSubset>
+      <EnableMultiCoolAnnealer name="MCA" history_size="10" />
+    </TASKOPERATIONS>
+    <MOVE_MAP_FACTORIES>
+      <MoveMapFactory name="relax_movemap" bb="false" chi="false" jumps="false" >
+	<Chi residue_selector="neighborhood" />
+	<Backbone residue_selector="chainB" />
+      </MoveMapFactory>
+    </MOVE_MAP_FACTORIES>
+    <MOVERS>
+      <AddChain name="add_target" file_name="inputs/2ast_B_relax.pdb" new_chain="1" scorefxn="r15" />
+      <SwitchChainOrder name="reorder_chains" chain_order="21" scorefxn="r15" />
+      <StartFrom name="move_to_RBM" chain="B" use_nbr="0" >
+	<PDB filename="inputs/startfrom.pdb" />
+      </StartFrom>
+      <DockSetupMover name="dock_setup" partners="A_B"/>
+      <DockingInitialPerturbation dock_pert="1" name="dock-set" randomize2="1" rot="180" trans="6"/>
+      <Docking name="dock_lowres" score_low="dock_low" score_high="dock_high" fullatom="1" local_refine="1" jumps="1" optimize_fold_tree="1" conserve_foldtree="0" design="0" />
+      <DockingProtocol name="dock" docking_score_high="r15" low_res_protocol_only="0" docking_local_refine="1" dock_min="1" partners="A_B"/>      
+      <ModifyVariantType name="strip_lower_terminal_type" remove_type="LOWER_TERMINUS_VARIANT" residue_selector="chainB" />
+      <ModifyVariantType name="strip_upper_terminal_type" remove_type="UPPER_TERMINUS_VARIANT" residue_selector="chainB" />
+      <ModifyVariantType name="add_cutpoint_upper" add_type="CUTPOINT_UPPER" residue_selector="first" />
+      <ModifyVariantType name="add_cutpoint_lower" add_type="CUTPOINT_LOWER" residue_selector="last" />
+      <ModifyVariantType name="strip_nmethylation" remove_type="N_METHYLATION" residue_selector="chainB" /> 
+      <ParsedProtocol name="do_cutpoint" >
+	<Add mover="strip_lower_terminal_type" />
+	<Add mover="strip_upper_terminal_type" />
+	<Add mover="add_cutpoint_upper" />
+	<Add mover="add_cutpoint_lower" />
+      </ParsedProtocol>
+      <DeclareBond name="connect_termini" atom1="N" atom2="C" res1="326" res2="343" />
+      <FastRelax name="frelax" repeats="3" scorefxn="r15_relax" task_operations="dont_repack_protein,extrarot1,limitaromachi2" movemap_factory="relax_movemap"/>
+      <FastDesign name="fdes1" repeats="3" scorefxn="r15_design" packer_palette="design_palette" task_operations="dont_design_protein,dont_repack_protein,extrarot1,limitaromachi2,only_design_peptoids" relaxscript="MonomerDesign2019" >
+	<MoveMap bb="0" chi="0" jump="1" >
+	  <Chain number="2" bb="1" chi="1" />
+	</MoveMap>
+      </FastDesign>
+      <FastDesign name="fdes2" repeats="3" scorefxn="r15_design2" packer_palette="design_palette" task_operations="dont_design_protein,dont_repack_protein,extrarot1,limitaromachi2,only_design_peptoids,MCA" relaxscript="MonomerDesign2019" >
+	<MoveMap bb="0" chi="1" jump="1" >
+	  <Chain number="2" bb="1" chi="1" />
+	</MoveMap>
+      </FastDesign>
+      <ScoreMover name="rescore" scorefxn="r15" verbose="false" />
+      <InterfaceAnalyzerMover name="IA" scorefxn="r15" pack_separated="true" pack_input="false" interface_sc="true" ligandchain="B" />
+      <DumpPdb name="dump_pdb" fname="dump.pdb" tag_time="true" scorefxn="r15_relax" />
+    </MOVERS>
+    <FILTERS>
+      <ScoreType name="high_score" scorefxn="r15" score_type="total_score" threshold="0.0"/>
+      <ReadPoseExtraScoreFilter name="sasa" term_name="dSASA_int" threshold="999999" />
+      <ReadPoseExtraScoreFilter name="ddg" term_name="dG_separated" threshold="-14.0" />
+      <ReadPoseExtraScoreFilter name="nres" term_name="nres_int" threshold="999999" />
+      <ReadPoseExtraScoreFilter name="duns" term_name="delta_unsatHbonds" threshold="2" />
+    </FILTERS>
+    <PROTOCOLS>
+	<Add mover="fdes2" />
+	<Add mover="rescore" />
+	<Add filter="high_score" />
+	<Add mover="IA" />
+	<Add filter="duns" />
+    </PROTOCOLS>
+  </ROSETTASCRIPTS>
