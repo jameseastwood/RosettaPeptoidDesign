@@ -2,8 +2,8 @@ The [Rosetta macromolecular modeling suite](https://www.rosettacommons.org/) has
 
 To use these scripts, you will first need to 
 1) obtain a valid license for Rosetta, download and install it (https://www.rosettacommons.org/software/license-and-download)
-2) Download the NCAA rotamer libraries and place them in Rosetta/main/database/rotamer/ncaa_rotlibs
-3) Uncomment the peptoid entries from the database file Rosetta/main/database/chemical/residue_types_sets/fa_standard/residue_types.txt
+2) download the NCAA rotamer libraries and place them in Rosetta/main/database/rotamer/ncaa_rotlibs
+3) uncomment the peptoid entries from the database file Rosetta/main/database/chemical/residue_types_sets/fa_standard/residue_types.txt
 
 References:
 (1) Renfrew, P. D.; Choi, E. J.; Bonneau, R.; Kuhlman, B. Incorporation of Noncanonical Amino Acids into Rosetta and Use in Computational Protein-Peptide Interface Design. PLoS ONE 2012, 7 (3). https://doi.org/10.1371/journal.pone.0032637.
