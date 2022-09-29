@@ -68,7 +68,7 @@
       <Not name="not_interface" selector="neighborhood" />
     </RESIDUE_SELECTORS>
     <PACKER_PALETTES>
-      <CustomBaseTypePackerPalette name="design_palette" additional_residue_types="DPRO,001,003,004,005,006,007,009,010,013,020,101,102,103,104,111,116,117,118,120,202,203,204,205,208,210,211,303,305,307,314,315,316,317,401,406,410,411,412,601,602,623,624" />
+      <CustomBaseTypePackerPalette name="design_palette" additional_residue_types="DPRO,001,003,004,005,006,007,009,010,013,020,101,102,103,104,111,116,117,118,120,202,203,204,205,208,210,211,303,305,307,314,316,317,401,406,410,411,412,601,602,623,624" />
       <CustomBaseTypePackerPalette name="mini_palette" additional_residue_types="001,013,101,111,202,208,211,303,411,601,602" />
     </PACKER_PALETTES>
     <TASKOPERATIONS>
