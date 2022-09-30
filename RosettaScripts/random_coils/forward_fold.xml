@@ -42,12 +42,16 @@
     <ExtraRotamersGeneric name="extrarot1" ex1="true" ex2="false" extrachi_cutoff="4" />
     <ExtraRotamersGeneric name="extrarot2" ex1="true" ex2="true" extrachi_cutoff="4" />
   </TASKOPERATIONS>
+  <SIMPLEMETRICS>
+    <RMSDMetric name="rmsd" reference_name="native_pose" residue_selector="true_sel" super="true"  rmsd_type="rmsd_all" />
+  </SIMPLEMETRICS>
   <FILTERS>
     <ScoreType name="co" score_type="co" threshold="-9.0" scorefxn="sfxn_2" />
     <ScoreType name="rg" score_type="rg" threshold="30.0" scorefxn="sfxn_2" />
     <ScoreType name="high_score" threshold="0" scorefxn="sfxn_2" />
   </FILTERS>
   <MOVERS>
+    <SavePoseMover name="native" restore_pose="0" reference_name="native_pose" />
     <RandomizeBBByRamaPrePro name="randomize" />
     <CrankshaftFlipMover name="cflip" residue_selector="middle" />
     <SetTorsion name="rama_sample">
@@ -78,16 +82,16 @@
     <DumpPdb name="dump" tag_time="True" fname="dump"/>
   </MOVERS>
   <PROTOCOLS>
+    <Add mover="native" />
     <Add mover="randomize" />
     <Add mover="mc1"/>
-    <Add mover="pmm" />
     <Add filter="rg" />
     <Add filter="co" />
     <Add mover="mc2" />
-    <Add mover="pmm" />
     <Add filter="rg" />
     <Add filter="co" />
     <Add mover="relax" />
+    <Add metrics="rmsd" />
   </PROTOCOLS>
   <OUTPUT scorefxn="final" />
 </ROSETTASCRIPTS>
