@@ -49,8 +49,17 @@
 	  <Slice name="middle" selector="true_sel" from="2" to="-2" />
 	</RESIDUE_SELECTORS>
 	<PACKER_PALETTES>
+<<<<<<< HEAD
     <CustomBaseTypePackerPalette name="design_palette" additional_residue_types="001,005,013,101,103,111,127,128,202,203,204,205,208,209,210,211,303,305,306,314,316,317,318,401,406,601,602,621,622,623,624" />
     <CustomBaseTypePackerPalette name="mini_palette" additional_residue_types="101,111,127,202,203,204,208,303,305,314,316,401" />
+=======
+<<<<<<< HEAD
+    <CustomBaseTypePackerPalette name="design_palette" additional_residue_types="DPRO,001,004,005,006,007,009,010,013,020,101,102,103,111,127,202,203,208,210,211,303,305,314,315,316,317,318,320,401,411,601,602,621,622,623,624" />
+=======
+    <CustomBaseTypePackerPalette name="design_palette" additional_residue_types="DPRO,001,004,005,006,007,009,010,013,021,101,102,103,104,111,116,117,118,120,127,128,132,202,203,204,205,208,209,210,211,303,305,306,314,316,317,318,320,401,402,406,410,411,412,413,601,602,621,622,623,624" />
+>>>>>>> 80661c2d8bea35f2050ed8aeee499df6ec9b26de
+    <CustomBaseTypePackerPalette name="mini_palette" additional_residue_types="001,101,111,202,208,211,303,411,601,602" />
+>>>>>>> 49cfe98d624790396b7b8a1dcc502d0453652946
     <CustomBaseTypePackerPalette name="nano_palette" additional_residue_types="001,211,303,202" />    
 	</PACKER_PALETTES>
 	<TASKOPERATIONS>
@@ -84,7 +93,7 @@
 	    <Append resname="303" repeat="3" />
 	    <Append resname="202" repeat="3" />
 	    <Append resname="303" repeat="2"/>
-	    <Append resname="202" repeat="3" />
+	    <Append resname="202" repeat="2" />
 	  </PeptideStubMover>
 	  <ModifyVariantType name="acetylate" add_type="LOWER_TERMINUS_VARIANT" residue_selector="first" />
 	  <ModifyVariantType name="methylamidate" add_type="UPPER_TERMINUS_VARIANT" residue_selector="last" />
@@ -119,9 +128,9 @@
 	    <Add mover="sample"/>
 	    <Add mover="pmm"/>
 	  </ParsedProtocol>
-	  <GenericMonteCarlo name="mc1" mover_name="sample" scorefxn_name="sfxn_1" trials="100000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" progress_file="progress.mc" adaptive_movers="True" adaptation_period="1000" />
-	  <GenericMonteCarlo name="mc2" mover_name="sample" scorefxn_name="sfxn_2" trials="10000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" adaptive_movers="1" adaptation_period="1000" />
-	  <AddCompositionConstraintMover name="peptoid_constraints" filename="inputs/peptoid_design.comp" selector="true_sel" />
+	  <GenericMonteCarlo name="mc1" mover_name="sample" scorefxn_name="sfxn_1" trials="2000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" progress_file="progress.mc" adaptive_movers="True" adaptation_period="200" />
+	  <GenericMonteCarlo name="mc2" mover_name="sample" scorefxn_name="sfxn_2" trials="2000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" adaptive_movers="1" adaptation_period="200" />
+	  <AddCompositionConstraintMover name="peptoid_constraints" filename="/mnt/home/jeastwood/RosettaPeptoidDesign/inputs/peptoid_design.comp" selector="true_sel" />
 	  <FastDesign name="design1" repeats="3" scorefxn="sfxn_2" packer_palette="mini_palette" task_operations="limitaromachi2,only_design_to_peptoids" relaxscript="MonomerDesign2019" />
 	  <FastDesign name="design2" repeats="3" scorefxn="r15_design" packer_palette="design_palette" task_operations="extrarot1,limitaromachi2,prune_buns,only_design_to_peptoids" relaxscript="MonomerDesign2019" />
 	  <FastRelax name="relax" repeats="5" scorefxn="r15" task_operations="extrarot1" relaxscript="MonomerRelax2019" />
