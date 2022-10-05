@@ -25,8 +25,8 @@
 	  <Slice name="middle" selector="true_sel" from="2" to="-2" />
 	</RESIDUE_SELECTORS>
 	<PACKER_PALETTES>
-    <CustomBaseTypePackerPalette name="design_palette" additional_residue_types="DPRO,001,004,005,006,007,009,010,013,021,101,102,103,104,111,116,117,118,120,127,128,132,202,203,204,205,208,209,210,211,303,305,306,314,316,317,318,320,401,402,406,410,411,412,413,601,602,621,622,623,624" />
-    <CustomBaseTypePackerPalette name="mini_palette" additional_residue_types="001,101,111,202,208,211,303,411,601,602" />
+    <CustomBaseTypePackerPalette name="design_palette" additional_residue_types="001,005,013,101,103,111,127,128,202,203,204,205,208,209,210,211,303,305,306,314,316,317,318,401,406,601,602,621,622,623,624" />
+    <CustomBaseTypePackerPalette name="mini_palette" additional_residue_types="101,111,127,202,203,204,208,303,305,314,316,401" />
     <CustomBaseTypePackerPalette name="nano_palette" additional_residue_types="001,211,303,202" />    
 	</PACKER_PALETTES>
 	<TASKOPERATIONS>
