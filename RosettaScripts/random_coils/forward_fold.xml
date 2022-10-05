@@ -42,9 +42,9 @@
     <ExtraRotamersGeneric name="extrarot1" ex1="true" ex2="false" extrachi_cutoff="4" />
     <ExtraRotamersGeneric name="extrarot2" ex1="true" ex2="true" extrachi_cutoff="4" />
   </TASKOPERATIONS>
-  <SIMPLEMETRICS>
+  <SIMPLE_METRICS>
     <RMSDMetric name="rmsd" reference_name="native_pose" residue_selector="true_sel" super="true"  rmsd_type="rmsd_all" />
-  </SIMPLEMETRICS>
+  </SIMPLE_METRICS>
   <FILTERS>
     <ScoreType name="co" score_type="co" threshold="-9.0" scorefxn="sfxn_2" />
     <ScoreType name="rg" score_type="rg" threshold="30.0" scorefxn="sfxn_2" />
