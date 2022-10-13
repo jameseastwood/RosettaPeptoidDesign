@@ -47,6 +47,7 @@
 	  <Slice name="first" selector="true_sel" indices="1" />
 	  <Slice name="last" selector="true_sel" indices="-1" />
 	  <Slice name="middle" selector="true_sel" from="2" to="-2" />
+	  <RandomResidue name="randres" />
 	</RESIDUE_SELECTORS>
 	<PACKER_PALETTES>
     <CustomBaseTypePackerPalette name="design_palette" additional_residue_types="001,005,013,101,103,111,127,128,202,203,204,205,208,209,210,211,303,305,306,314,316,317,318,320,401,406,411,601,602,621,622,623,624" />
@@ -61,6 +62,7 @@
 	  <RestrictToResidueProperties name="only_design_to_peptoids" properties="PEPTOID" />
 	</TASKOPERATIONS>
 	<MOVE_MAP_FACTORIES>
+	  <MoveMapFactory name="movemap_bb" bb="1" chi="0" />
 	</MOVE_MAP_FACTORIES>
 	<SIMPLE_METRICS>
 	</SIMPLE_METRICS>
@@ -90,16 +92,15 @@
 	  <ModifyVariantType name="methylamidate" add_type="UPPER_TERMINUS_VARIANT" residue_selector="last" />
 	  <RandomizeBBByRamaPrePro name="randomize" />
 	  <CrankshaftFlipMover name="cflip" residue_selector="middle" />
-	  <Shear name="shear" residue_selector="true_sel" scorefxn="sfxn_1" temperature="0.5" nmoves="1" angle_max="60.0" preserve_detailed_balance="0"/>
-	  <Small name="small" residue_selector="true_sel" scorefxn="sfxn_1" temperature="0.5" nmoves="1" angle_max="60.0" preserve_detailed_balance="0" />
-	  <SetTorsion name="rama_sample">
-	    <Torsion residue="ALL" torsion_name="rama" angle="rama_biased" />
-	  </SetTorsion>
+	  <RandomizeBBByRamaPrePro name="rama_sample" residue_selector="randres" />
 	  <SetTorsion name="perturb">
-	    <Torsion residue="ALL" torsion_name="rama" angle="perturb" perturbation_type="gaussian" perturbation_magnitude="10.0" />
+	    <Torsion residue="ALL" torsion_name="phi" angle="perturb" perturbation_type="gaussian" perturbation_magnitude="1.0" />
+	    <Torsion residue="ALL" torsion_name="psi" angle="perturb" perturbation_type="gaussian" perturbation_magnitude="1.0" />
 	  </SetTorsion>
-	  <RandomOmegaFlipMover name="omega" />
-	  <PyMOLMover name="pmm" keep_history="false" />
+	  <RandomOmegaFlipMover name="omega">
+	    <MoveMap bb="1" />
+	  </RandomOmegaFlipMover>
+	  <PyMOLMover name="pmm" keep_history="true" />
 	  <MinMover name="min" jump="0" abs_score_convergence_threshold="1.0" max_iter="200" type="lbfgs_armijo_nonmonotone" tolerance="0.01" cartesian="false" bb="true" chi="true" omega="true" scorefxn="sfxn_1" >
 	    <MoveMap name="min_mvmap" bb="true" chi="true" jump="false" />
 	  </MinMover>
@@ -108,20 +109,18 @@
 	    <Add mover="min" />
 	  </ParsedProtocol>
 	  <ParsedProtocol name="sample" mode="single_random">
-	    <!--Add mover="shear" />-->
-	    <!--Add mover="small" />-->
 	    <Add mover="cflip" />
 	    <Add mover="rama_sample" />
 	    <Add mover="perturb" />
-	    <Add mover="omega" />
+	    <!--Add mover="omega" />Mover is not working! Probably an empty movemap-->
 	  </ParsedProtocol>
 	  <ParsedProtocol name="sample_and_observe" mode="sequence">
-	    <Add mover="sample"/>
 	    <Add mover="pmm"/>
+	    <Add mover="sample"/>
 	  </ParsedProtocol>
-	  <GenericMonteCarlo name="mc1" mover_name="sample" scorefxn_name="sfxn_1" trials="2000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" progress_file="progress.mc" adaptive_movers="True" adaptation_period="200" />
-	  <GenericMonteCarlo name="mc2" mover_name="sample" scorefxn_name="sfxn_2" trials="2000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" adaptive_movers="1" adaptation_period="200" />
-	  <AddCompositionConstraintMover name="peptoid_constraints" filename="/mnt/home/jeastwood/RosettaPeptoidDesign/inputs/peptoid_design.comp" selector="true_sel" />
+	  <GenericMonteCarlo name="mc1" mover_name="sample_and_observe" scorefxn_name="sfxn_1" trials="10000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" progress_file="progress.mc" adaptive_movers="True" adaptation_period="200" />
+	  <GenericMonteCarlo name="mc2" mover_name="sample_and_observe" scorefxn_name="sfxn_2" trials="2000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" adaptive_movers="1" adaptation_period="200" />
+	  <AddCompositionConstraintMover name="peptoid_constraints" filename="/home/work/Projects/RosettaPeptoidDesign/inputs/peptoid_design.comp" selector="true_sel" />
 	  <FastDesign name="design1" repeats="3" scorefxn="sfxn_2" packer_palette="mini_palette" task_operations="limitaromachi2,only_design_to_peptoids" relaxscript="MonomerDesign2019" />
 	  <FastDesign name="design2" repeats="3" scorefxn="r15_design" packer_palette="design_palette" task_operations="extrarot1,limitaromachi2,prune_buns,only_design_to_peptoids" relaxscript="MonomerDesign2019" />
 	  <FastRelax name="relax" repeats="5" scorefxn="r15" task_operations="extrarot1" relaxscript="MonomerRelax2019" />
@@ -134,11 +133,15 @@
 	  <Add mover="randomize" />
 	  <Add mover="mc1"/>
 	  <Add mover="relax" />
+	  <Add mover="pmm" />
 	  <Add mover="design1" />
+	  <Add mover="pmm" />
 	  <Add mover="mc2" />
 	  <Add mover="peptoid_constraints" />
 	  <Add mover="design2" />
+	  <Add mover="pmm" />
 	  <Add mover="relax" />
+	  <Add mover="pmm" />
 	</PROTOCOLS>
 	<OUTPUT scorefxn="final" />
 </ROSETTASCRIPTS>
