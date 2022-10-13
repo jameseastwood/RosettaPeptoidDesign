@@ -50,7 +50,7 @@
 	  <RandomResidue name="randres" />
 	</RESIDUE_SELECTORS>
 	<PACKER_PALETTES>
-    <CustomBaseTypePackerPalette name="design_palette" additional_residue_types="001,005,013,101,103,111,127,128,202,203,204,205,208,209,210,211,303,305,306,314,316,317,318,320,401,406,411,601,602,621,622,623,624" />
+    <CustomBaseTypePackerPalette name="design_palette" additional_residue_types="001,005,101,103,111,127,128,202,203,204,205,208,209,210,211,303,305,306,314,316,317,318,320,401,406,411,601,602,621,622,623,624" />
     <CustomBaseTypePackerPalette name="mini_palette" additional_residue_types="101,111,127,202,203,204,208,303,305,314,316,401" />
     <CustomBaseTypePackerPalette name="nano_palette" additional_residue_types="001,211,303,202" />    
 	</PACKER_PALETTES>
