@@ -25,7 +25,7 @@
 	  <Slice name="middle" selector="true_sel" from="2" to="-2" />
 	</RESIDUE_SELECTORS>
 	<PACKER_PALETTES>
-    <CustomBaseTypePackerPalette name="design_palette" additional_residue_types="001,005,013,101,103,111,127,128,202,203,204,205,208,209,210,211,303,305,306,314,316,317,318,320,401,406,411,601,602,621,622,623,624" />
+    <CustomBaseTypePackerPalette name="design_palette" additional_residue_types="001,005,101,103,111,127,128,202,203,204,205,208,209,210,211,303,305,306,314,316,317,318,320,401,406,411,601,602,621,622,623,624" />
     <CustomBaseTypePackerPalette name="mini_palette" additional_residue_types="101,111,127,202,203,204,208,303,305,314,316,401" />
     <CustomBaseTypePackerPalette name="nano_palette" additional_residue_types="001,211,303,202" />    
 	</PACKER_PALETTES>
@@ -52,7 +52,7 @@
 	    <Add mover="cflip" />
 	    <Add mover="min" />
 	  </ParsedProtocol>
-	  <GenericMonteCarlo name="mc1" mover_name="flip_min" scorefxn_name="r15" trials="100" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" progress_file="progress.mc" />
+	  <GenericMonteCarlo name="mc1" mover_name="flip_min" scorefxn_name="r15" trials="1000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" progress_file="progress.mc" />
 	  <AddCompositionConstraintMover name="peptoid_constraints" filename="/mnt/home/jeastwood/RosettaPeptoidDesign/inputs/peptoid_design.comp" selector="true_sel" />
 	  <FastDesign name="design1" repeats="3" scorefxn="r15_design" packer_palette="design_palette" task_operations="limitaromachi2,only_design_to_peptoids" relaxscript="MonomerDesign2019" />
 	  <FastRelax name="relax" repeats="5" scorefxn="r15" task_operations="extrarot1" relaxscript="MonomerRelax2019" />

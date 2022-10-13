@@ -118,11 +118,17 @@
 	    <Add mover="pmm"/>
 	    <Add mover="sample"/>
 	  </ParsedProtocol>
+<<<<<<< HEAD
 	  <GenericMonteCarlo name="mc1" mover_name="sample_and_observe" scorefxn_name="sfxn_1" trials="10000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" progress_file="progress.mc" adaptive_movers="True" adaptation_period="200" />
 	  <GenericMonteCarlo name="mc2" mover_name="sample_and_observe" scorefxn_name="sfxn_2" trials="2000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" adaptive_movers="1" adaptation_period="200" />
 	  <AddCompositionConstraintMover name="peptoid_constraints" filename="/home/work/Projects/RosettaPeptoidDesign/inputs/peptoid_design.comp" selector="true_sel" />
+=======
+	  <GenericMonteCarlo name="mc1" mover_name="sample" scorefxn_name="sfxn_1" trials="2000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" progress_file="progress.mc" adaptive_movers="True" adaptation_period="200" />
+	  <GenericMonteCarlo name="mc2" mover_name="sample" scorefxn_name="sfxn_2" trials="10000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" adaptive_movers="1" adaptation_period="200" />
+	  <AddCompositionConstraintMover name="peptoid_constraints" filename="/mnt/home/jeastwood/RosettaPeptoidDesign/inputs/peptoid_design.comp" selector="true_sel" />
+>>>>>>> fd237d3fbf677fb374e14fce4896ca4b772f8857
 	  <FastDesign name="design1" repeats="3" scorefxn="sfxn_2" packer_palette="mini_palette" task_operations="limitaromachi2,only_design_to_peptoids" relaxscript="MonomerDesign2019" />
-	  <FastDesign name="design2" repeats="3" scorefxn="r15_design" packer_palette="design_palette" task_operations="extrarot1,limitaromachi2,prune_buns,only_design_to_peptoids" relaxscript="MonomerDesign2019" />
+	  <FastDesign name="design2" repeats="1" scorefxn="r15_design" packer_palette="design_palette" task_operations="extrarot1,limitaromachi2,prune_buns,only_design_to_peptoids" relaxscript="MonomerDesign2019" />
 	  <FastRelax name="relax" repeats="5" scorefxn="r15" task_operations="extrarot1" relaxscript="MonomerRelax2019" />
 	  <DumpPdb name="dump" tag_time="True" />
 	</MOVERS>
@@ -135,8 +141,14 @@
 	  <Add mover="relax" />
 	  <Add mover="pmm" />
 	  <Add mover="design1" />
+<<<<<<< HEAD
 	  <Add mover="pmm" />
+=======
+	  <Add mover="randomize" />
+	  <Add mover="mc1" />
+>>>>>>> fd237d3fbf677fb374e14fce4896ca4b772f8857
 	  <Add mover="mc2" />
+	  <Add mover="relax" />
 	  <Add mover="peptoid_constraints" />
 	  <Add mover="design2" />
 	  <Add mover="pmm" />
