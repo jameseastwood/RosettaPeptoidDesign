@@ -14,7 +14,7 @@
     </ScoreFunction>
     <ScoreFunction name="sfxn_2">
       <Reweight scoretype="fa_atr" weight="1.0"/>
-      <Reweight scoretype="fa_rep" weight="0.25"/>
+      <Reweight scoretype="fa_rep" weight="0.55"/>
       <Reweight scoretype="fa_sol" weight="1.0"/>
       <Reweight scoretype="fa_intra_sol" weight="1.0" />
       <Reweight scoretype="fa_elec" weight="1.0" />
@@ -23,6 +23,7 @@
       <Reweight scoretype="rama_prepro" weight="1.0"/>
       <Reweight scoretype="co" weight="-2.0"/>
       <Reweight scoretype="rg" weight="2.0"/>
+      <Set softrep_etable="True" />
     </ScoreFunction>
     <ScoreFunction name="r15_design" weights="ref2015.wts" >
       <Reweight scoretype="unfolded" weight="1.0" />
@@ -115,18 +116,12 @@
 	    <!--Add mover="omega" />Mover is not working! Probably an empty movemap-->
 	  </ParsedProtocol>
 	  <ParsedProtocol name="sample_and_observe" mode="sequence">
-	    <Add mover="pmm"/>
 	    <Add mover="sample"/>
+	    <Add mover="pmm"/>
 	  </ParsedProtocol>
-<<<<<<< HEAD
-	  <GenericMonteCarlo name="mc1" mover_name="sample_and_observe" scorefxn_name="sfxn_1" trials="10000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" progress_file="progress.mc" adaptive_movers="True" adaptation_period="200" />
-	  <GenericMonteCarlo name="mc2" mover_name="sample_and_observe" scorefxn_name="sfxn_2" trials="2000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" adaptive_movers="1" adaptation_period="200" />
-	  <AddCompositionConstraintMover name="peptoid_constraints" filename="/home/work/Projects/RosettaPeptoidDesign/inputs/peptoid_design.comp" selector="true_sel" />
-=======
 	  <GenericMonteCarlo name="mc1" mover_name="sample" scorefxn_name="sfxn_1" trials="2000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" progress_file="progress.mc" adaptive_movers="True" adaptation_period="200" />
-	  <GenericMonteCarlo name="mc2" mover_name="sample" scorefxn_name="sfxn_2" trials="10000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" adaptive_movers="1" adaptation_period="200" />
-	  <AddCompositionConstraintMover name="peptoid_constraints" filename="/mnt/home/jeastwood/RosettaPeptoidDesign/inputs/peptoid_design.comp" selector="true_sel" />
->>>>>>> fd237d3fbf677fb374e14fce4896ca4b772f8857
+	  <GenericMonteCarlo name="mc2" mover_name="sample" scorefxn_name="sfxn_2" trials="2000" sample_type="low" temperature="1.0" drift="1" recover_low="1" preapply="0" adaptive_movers="1" adaptation_period="200" />
+	  <AddCompositionConstraintMover name="peptoid_constraints" filename="/home/work/Projects/RosettaPeptoidDesign/inputs/peptoid_design.comp" selector="true_sel" />
 	  <FastDesign name="design1" repeats="3" scorefxn="sfxn_2" packer_palette="mini_palette" task_operations="limitaromachi2,only_design_to_peptoids" relaxscript="MonomerDesign2019" />
 	  <FastDesign name="design2" repeats="1" scorefxn="r15_design" packer_palette="design_palette" task_operations="extrarot1,limitaromachi2,prune_buns,only_design_to_peptoids" relaxscript="MonomerDesign2019" />
 	  <FastRelax name="relax" repeats="5" scorefxn="r15" task_operations="extrarot1" relaxscript="MonomerRelax2019" />
@@ -141,14 +136,12 @@
 	  <Add mover="relax" />
 	  <Add mover="pmm" />
 	  <Add mover="design1" />
-<<<<<<< HEAD
-	  <Add mover="pmm" />
-=======
 	  <Add mover="randomize" />
 	  <Add mover="mc1" />
->>>>>>> fd237d3fbf677fb374e14fce4896ca4b772f8857
+	  <Add mover="min" />
 	  <Add mover="mc2" />
 	  <Add mover="relax" />
+	  <Add mover="pmm" />
 	  <Add mover="peptoid_constraints" />
 	  <Add mover="design2" />
 	  <Add mover="pmm" />

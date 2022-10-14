@@ -14,7 +14,7 @@
     </ScoreFunction>
     <ScoreFunction name="sfxn_2">
       <Reweight scoretype="fa_atr" weight="1.0"/>
-      <Reweight scoretype="fa_rep" weight="0.25"/>
+      <Reweight scoretype="fa_rep" weight="0.55"/>
       <Reweight scoretype="fa_sol" weight="1.0"/>
       <Reweight scoretype="fa_intra_sol" weight="1.0" />
       <Reweight scoretype="fa_elec" weight="1.0" />
@@ -22,7 +22,8 @@
       <Reweight scoretype="omega" weight="0.4"/>
       <Reweight scoretype="rama_prepro" weight="1.0"/>
       <Reweight scoretype="co" weight="-2.0"/>
-      <Reweight scoretype="rg" weight="2.0"/>
+      <Reweight scoretype="rg" weight="2.0"/> 
+      <Set softrep_etable="True" />
     </ScoreFunction>
     <ScoreFunction name="r15" weights="ref2015.wts" />
     <ScoreFunction name="final" weights="ref2015.wts">
@@ -36,6 +37,7 @@
     <Slice name="first" selector="true_sel" indices="1" />
     <Slice name="last" selector="true_sel" indices="-1" />
     <Slice name="middle" selector="true_sel" from="2" to="-2" />
+    <RandomResidue name="randres" />
   </RESIDUE_SELECTORS>
   <TASKOPERATIONS>
     <LimitAromaChi2 name="limitaromachi2" />
@@ -54,11 +56,10 @@
     <SavePoseMover name="native" restore_pose="0" reference_name="native_pose" />
     <RandomizeBBByRamaPrePro name="randomize" />
     <CrankshaftFlipMover name="cflip" residue_selector="middle" />
-    <SetTorsion name="rama_sample">
-      <Torsion residue="ALL" torsion_name="rama" angle="rama_biased" />
-    </SetTorsion>
+    <RandomizeBBByRamaPrePro name="rama_sample" residue_selector="randres" />
     <SetTorsion name="perturb">
-      <Torsion residue="ALL" torsion_name="rama" angle="perturb" perturbation_type="gaussian" perturbation_magnitude="10.0" />
+      <Torsion residue="ALL" torsion_name="phi" angle="perturb" perturbation_type="gaussian" perturbation_magnitude="1.0" />
+      <Torsion residue="ALL" torsion_name="psi" angle="perturb" perturbation_type="gaussian" perturbation_magnitude="1.0" />
     </SetTorsion>
     <RandomOmegaFlipMover name="omega" />
     <PyMOLMover name="pmm" keep_history="true" />
